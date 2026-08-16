@@ -1,0 +1,32 @@
+{
+  "name": "dsh-dist-manager",
+  "version": "0.1.1",
+  "description": "DSH 插件分发目录（dist/）管理插件：自动归档旧版本插件，保留最新版本，提供 WebUI 管理界面。曾用名 dist-archive-plugin。",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": { "default": "./index.js" },
+    "./client": { "default": "./client.js" },
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": ["index.js", "client.js", "cordis.patch.yml", "README.md"],
+  "license": "MIT",
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-slots",
+        "@deepseek-ai/dsh-client-runtime"
+      ],
+      "platform": "web"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-host-webserver": "0.1.0-rc.5",
+    "@deepseek-ai/dsh-tools": "0.1.0-rc.5",
+    "@deepseek-ai/dsh-client-ui-slots": "0.1.0-rc.5",
+    "@deepseek-ai/dsh-client-runtime": "0.1.0-rc.5"
+  }
+}

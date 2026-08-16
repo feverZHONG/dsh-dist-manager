@@ -1,0 +1,146 @@
+# dsh-dist-manager · 插件分发目录管理插件
+
+> 曾用名 **dist-archive-plugin**（2026-08-16 更名：消除与它管理的 `dist/` 数据目录的名字混淆）。
+
+自动管理 `workspace/dsh-plugins/dist/`（插件分发目录）的版本归档：将旧版本移至归档目录，保留最新版本在 dist 根目录。提供 WebUI 管理界面，支持一键归档、恢复版本、清理归档等操作。
+
+## 功能特性
+
+### 核心功能
+- **自动归档**：自动扫描 dist 目录下的插件包，按插件名分组，按版本号排序
+- **版本管理**：保留最新版本，将旧版本移至归档目录
+- **WebUI 管理**：在设置页 → 插件归档 小节提供完整的管理界面
+- **一键操作**：支持一键归档所有插件、一键清理所有归档
+
+### 管理功能
+- **查看状态**：实时显示插件总数、当前版本数、已归档版本数
+- **单个归档**：对特定插件执行归档操作
+- **版本恢复**：从归档目录恢复特定版本到 dist 根目录
+- **归档清理**：清理特定插件或所有插件的归档
+
+## 安装 / 打包
+
+```powershell
+# 安装（装完重启 WebUI 生效）
+node "E:\DeepSeek Harness\resources\host\node_modules\@deepseek-ai\dsh\lib\bin.js" plugin --profile web add E:\DCIM\DSH-Liya\workspace\dsh-plugins\dsh-dist-manager
+
+# 打包归档（产物在 workspace\dsh-plugins\dist\）
+pnpm pack --pack-destination E:\DCIM\DSH-Liya\workspace\dsh-plugins\dist
+
+# 卸载
+node "...bin.js" plugin --profile web remove dsh-dist-manager
+```
+
+## 界面行为
+
+### 设置 → 插件归档
+- **统计卡片**：显示插件总数、当前版本数、已归档版本数
+- **操作按钮**：
+  - 📦 一键归档所有：将所有插件的旧版本移至归档目录
+  - 🗑️ 清理所有归档：删除所有归档目录
+- **插件列表**：显示每个插件的详细信息
+  - 最新版本号
+  - 版本总数
+  - 已归档版本数
+  - 单个归档/清理按钮
+- **归档详情**：显示每个插件的归档版本列表，支持恢复操作
+
+### API 接口
+- `GET /dist-manager/status` - 获取归档状态摘要
+- `GET /dist-manager/details` - 获取详细归档信息
+- `POST /dist-manager/archive` - 执行归档操作
+- `POST /dist-manager/restore` - 恢复特定版本
+- `POST /dist-manager/clean` - 清理归档
+- `GET /dist-manager/config` - 获取配置
+- `POST /dist-manager/config` - 更新配置
+
+## 配置
+
+配置读取优先级：**cordis.yml 的 Config 字段（`apply(ctx, config)`）> `config.json` 文件 > 默认路径**。
+link 安装（当前部署）时写 `config.json`；tgz 安装时建议直接在 cordis.yml 里配：
+
+```json
+{
+  "distDir": "E:\\DCIM\\DSH-Liya\\workspace\\dsh-plugins\\dist",
+  "archiveDir": "E:\\DCIM\\DSH-Liya\\workspace\\dsh-plugins\\dist\\archive",
+  "autoArchive": true,
+  "keepVersions": 1
+}
+```
+
+### 配置项说明
+- `distDir`：dist 目录路径
+- `archiveDir`：归档目录路径
+- `autoArchive`：是否自动归档（预留功能）
+- `keepVersions`：保留的版本数量（预留功能）
+
+## 目录结构
+
+```
+dist/
+├── 插件1-最新版本.tgz
+├── 插件2-最新版本.tgz
+├── archive/
+│   ├── 插件1/
+│   │   ├── 插件1-旧版本1.tgz
+│   │   └── 插件1-旧版本2.tgz
+│   └── 插件2/
+│       └── 插件2-旧版本1.tgz
+└── dsh-dist-manager/  ← 本插件（管理上面这个 dist/）
+```
+
+## 工作原理
+
+### Host 半（index.js）
+1. 扫描 dist 目录下的所有 `.tgz` 文件
+2. 按插件名分组，按版本号排序
+3. 提供 RESTful API 接口
+4. 执行归档、恢复、清理操作
+
+### Client 半（client.js）
+1. 在设置页注册「插件归档」小节
+2. 实时轮询归档状态
+3. 提供交互式管理界面
+4. 调用 Host API 执行操作
+
+## 使用场景
+
+### 1. 发布新版本后
+- 运行 `pnpm pack` 生成新的 `.tgz` 文件
+- 在设置页点击「📦 一键归档所有」
+- 旧版本自动移至归档目录
+
+### 2. 需要恢复旧版本
+- 在归档详情中找到目标版本
+- 点击「恢复」按钮
+- 旧版本复制回 dist 根目录
+
+### 3. 清理存储空间
+- 在插件列表中点击「🗑️ 清理」
+- 或点击「🗑️ 清理所有归档」
+- 归档目录中的旧版本被删除
+
+## 注意事项
+
+1. **路径安全**：所有文件操作都经过路径验证，防止路径穿越攻击
+2. **错误处理**：所有操作都有完善的错误处理和用户反馈
+3. **实时更新**：状态变化后自动刷新界面
+4. **配置持久化**：配置存储在插件目录下，跨重启保持
+
+## 版本历史
+
+### v0.1.1 (2026-08-16)
+- **更名**：包名/目录 `dist-archive-plugin` → `dsh-dist-manager`（消除与 dist/ 数据目录的名字混淆；API 路径 /dist-archive/* → /dist-manager/*）
+- **修复**：清理归档按钮请求体错误（单个清理/全部清理都失效）
+- **修复**：插件名/版本号路径白名单校验落地（防路径穿越）
+- **变更**：配置支持 `apply(ctx, config)`（cordis.yml 可改），tgz 安装也可用
+
+### v0.1.0 (2026-08-16)
+- 初始版本
+- 基础归档功能
+- WebUI 管理界面
+- 一键归档和清理
+
+---
+
+*最后更新：2026-08-16*
