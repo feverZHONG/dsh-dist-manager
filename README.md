@@ -2,7 +2,7 @@
 
 > 曾用名 **dist-archive-plugin**（2026-08-16 更名：消除与它管理的 `dist/` 数据目录的名字混淆）。
 
-自动管理 `workspace/dsh-plugins/dist/`（插件分发目录）的版本归档：将旧版本移至归档目录，保留最新版本在 dist 根目录。提供 WebUI 管理界面，支持一键归档、恢复版本、清理归档等操作。
+自动管理插件分发目录（`dist/`）的版本归档：将旧版本移至归档目录，保留最新版本在 dist 根目录。提供 WebUI 管理界面，支持一键归档、恢复版本、清理归档等操作。
 
 ## 功能特性
 
@@ -22,14 +22,16 @@
 
 ```powershell
 # 安装（装完重启 WebUI 生效）
-node "E:\DeepSeek Harness\resources\host\node_modules\@deepseek-ai\dsh\lib\bin.js" plugin --profile web add E:\DCIM\DSH-Liya\workspace\dsh-plugins\dsh-dist-manager
+dsh plugin --profile web add <插件目录>
 
-# 打包归档（产物在 workspace\dsh-plugins\dist\）
-pnpm pack --pack-destination E:\DCIM\DSH-Liya\workspace\dsh-plugins\dist
+# 打包归档（产物输出到你的 dist 目录）
+pnpm pack --pack-destination <你的插件分发目录>
 
 # 卸载
-node "...bin.js" plugin --profile web remove dsh-dist-manager
+dsh plugin --profile web remove dsh-dist-manager
 ```
+
+> `dsh` 请替换为阁下 DSH 安装对应的 CLI 调用方式。
 
 ## 界面行为
 
@@ -57,16 +59,18 @@ node "...bin.js" plugin --profile web remove dsh-dist-manager
 ## 配置
 
 配置读取优先级：**cordis.yml 的 Config 字段（`apply(ctx, config)`）> `config.json` 文件 > 默认路径**。
-link 安装（当前部署）时写 `config.json`；tgz 安装时建议直接在 cordis.yml 里配：
+link 安装时写 `config.json`；tgz 安装时建议直接在 cordis.yml 里配：
 
 ```json
 {
-  "distDir": "E:\\DCIM\\DSH-Liya\\workspace\\dsh-plugins\\dist",
-  "archiveDir": "E:\\DCIM\\DSH-Liya\\workspace\\dsh-plugins\\dist\\archive",
+  "distDir": "<你的插件分发目录>/dist",
+  "archiveDir": "<你的插件分发目录>/dist/archive",
   "autoArchive": true,
   "keepVersions": 1
 }
 ```
+
+不配置时默认取插件目录上级的 `dist/`（link 安装场景），无需改配置即可使用。
 
 ### 配置项说明
 - `distDir`：dist 目录路径
