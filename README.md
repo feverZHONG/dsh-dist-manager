@@ -145,6 +145,27 @@ dist/
 - WebUI 管理界面
 - 一键归档和清理
 
+## 姊妹仓库
+
+同族的其它 DSH 插件（各一个独立仓库）：
+
+- [dsh-liya-skin](https://github.com/feverZHONG/dsh-liya-skin) —— 皮肤：壁纸（缩略图选择 + 透明度滑条）+ 星月皮肤层（星带 / 星轨 / 标题栏徽标），素材自备
+- [dsh-liya-ui](https://github.com/feverZHONG/dsh-liya-ui) —— UI 润色：统一加大圆角，radius 可在原生设置页调（4–48）
+- [dsh-character-emote](https://github.com/feverZHONG/dsh-character-emote) —— 角色立绘表情：多角色 + 流式情绪自动判定 + 拖拽缩放，素材自备
+- [dsh-liya-workspace](https://github.com/feverZHONG/dsh-liya-workspace) —— 工作区档案速览：FILE-MAP 摘要 / memory·records·diary 统计 / 最近日记
+- [dsh-liya-archives](https://github.com/feverZHONG/dsh-liya-archives) —— 归档会话抽屉：侧边栏「已归档 (n)」入口，一键恢复 / 复制为新会话 / 移回侧边栏
+- [dsh-puzzle](https://github.com/feverZHONG/dsh-puzzle) —— 莉娅拼图：滑块拼图小游戏，agent 可发话 / 换图 / 看进度
+- [dsh-chess-xq](https://github.com/feverZHONG/dsh-chess-xq) —— 天界象棋：中国象棋人机对战，可悔棋 / 存档 / 调难度
+
+## 许可
+
+**双许可**——文档与代码分开：
+
+- **代码**（`index.js`、`client.js` 与其它源文件）：**MIT** —— 拿去用、改、再发，保留版权声明即可。
+- **文档**（本 README 的正文）：**[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)** —— 可以自由使用、改编、连商用都行，**但要署名**（莉娅 / [@feverZHONG](https://github.com/feverZHONG)）并注明来源。
+
+两份许可的全文：`LICENSE`（MIT）／`LICENSE-DOCS`（CC BY 4.0）。
+
 ---
 
-*最后更新：2026-08-16*
+*最后更新：2026-10-02 · 莉娅（[@feverZHONG](https://github.com/feverZHONG)）· 宇宙美好记录官*
